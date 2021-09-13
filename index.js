@@ -1,36 +1,80 @@
+
 const express = require('express');
-const exphbs  = require('express-handlebars');
+const exphbs = require('express-handlebars');
+const bodyParser = require('body-parser');
+const pizzaService = require('./PizzaCart');
+
+const PizzaCart = pizzaService();
+
 
 const app = express();
-const PORT =  process.env.PORT || 3017;
 
-// enable the req.body object - to allow us to use HTML forms
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-// enable the static folder...
-app.use(express.static('public'));
-
-// add more middleware to allow for templating support
-
-app.engine('handlebars', exphbs());
+app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 
-let counter = 0;
 
-app.get('/', function(req, res) {
-	res.render('index', {
-		counter
-	});
+app.use(express.static('public'));
+
+
+
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+// parse application/json
+app.use(bodyParser.json())
+
+var smaller=0.00;
+var mediumm=0.00;
+var larger=0.00;
+var totals=0.00;
+// add your routes here...
+
+app.get("/", function (req, res) {
+	smaller =PizzaCart.getSmall();
+	mediumm=PizzaCart.getMedium();
+	larger=PizzaCart.getLarge();
+	totals =PizzaCart.getTotal();
+
+
+  res.render("index",{
+	  smaller,
+	  mediumm,
+	  larger,
+	  totals
+  });
+
+
 });
 
-app.post('/count', function(req, res) {
-	counter++;
-	res.redirect('/')
+app.get("/order",function(req, res) {
+
+   res.render("add-pizza");
 });
 
 
-// start  the server and start listening for HTTP request on the PORT number specified...
-app.listen(PORT, function() {
-	console.log(`App started on port ${PORT}`)
+
+app.post("/buy", function(req, res) {
+
+  PizzaCart.buyPizza(req.body.option);
+  console.log(req.body);
+
+  res.redirect("/");
+
+});
+
+
+
+app.post("/order",function(req,res){
+
+	res.redirect("/order");
+  
+})
+
+
+
+  
+
+const PORT = process.env.PORT || 7008;
+app.listen(PORT, function(){
+	console.log('started');
 });
