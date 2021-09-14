@@ -5,7 +5,8 @@ body {
 	background-color:#f78154ff;
 	font-size: 0.75em;
   }
-
+ 
+ 
 .btn {
 	padding: 1em;
 	margin: 1em;
@@ -42,7 +43,7 @@ body {
 		padding: 0.75em;
 		margin: 0.75em;
 		font-size: 0.75em;
-		background-color: #3FA9E2;
+		background-color: #bfcbd1;
 	}
 
 	.field {
